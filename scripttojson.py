@@ -11,9 +11,8 @@ def getJsonFromLine(csv_data, csv_line_index):
         return float('nan')
     formatting_offset = 2
     line = int(csv_line_index - formatting_offset)
-    print(line)
     data = {
-        "voiceover_id" : csv_data['VOICEOVER ID'].tolist()[line],
+        #"voiceover_id" : csv_data['VOICEOVER ID'].tolist()[line],
         "display_text" : csv_data['DISPLAY TEXT'].tolist()[line],
         "speaker" : csv_data['SPEAKER'].tolist()[line],
         "text" : csv_data['TEXT'].tolist()[line],
@@ -36,6 +35,17 @@ def getJsonFromLine(csv_data, csv_line_index):
     convertedToJson = json.dumps(data, indent=4)
     return convertedToJson
 
+def getCharacterSpriteData(csv_dialogue):
+    characters = set()
+    characterSprites = []
+    for each in csv_dialogue['SPEAKER'].tolist():
+        characters.add(each)
+    for each in characters:
+        characterSprites.append({"name" : each, "spriteID" : ""})
+    return characterSprites
+
+def getDialogueID(): # ---------------------------------------------------------------------------------- Make this, dummy
+    return "********** MANUALLY CHANGE ID VALUE **********"
 
 directory = 'input_script_xlsx'
 completedDirectory = 'completed_scripts'
@@ -47,12 +57,18 @@ for filename in os.listdir(directory):
 
     #Build the JSON
     firstLineIndex = 2
-    jsonData = getJsonFromLine(csv_data, firstLineIndex)
+    dialogueData = getJsonFromLine(csv_data, firstLineIndex)
+    jsonData = {
+        "chatSpriteIDs" : getCharacterSpriteData(csv_data),
+        "dialogueID" : getDialogueID(),
+        "dialogue" : dialogueData 
+    }
+    outputJson = json.dumps(jsonData, indent=4)
 
     #Output the JSON
     completedPath = os.path.join(completedDirectory, 'TESTOUT.txt')
     out = open(completedPath, 'w', encoding='utf-8')
-    out.write(jsonData)
+    out.write(outputJson)
 
     completedPath = os.path.join(completedDirectory, filename)
     os.rename(file, completedPath)
