@@ -1,7 +1,6 @@
 import json
-from openpyxl import Workbook
-from openpyxl import load_workbook
 import os
+import pandas
 from pandas import *
 import numpy
 
@@ -12,9 +11,10 @@ def getJsonFromLine(csv_data, csv_line_index):
     formatting_offset = 2
     line = int(csv_line_index - formatting_offset)
     data = {
-        #"voiceover_id" : csv_data['VOICEOVER ID'].tolist()[line],
+        "voiceover_id" : csv_data['VOICEOVER ID'].tolist()[line],
         "display_text" : csv_data['DISPLAY TEXT'].tolist()[line],
         "speaker" : csv_data['SPEAKER'].tolist()[line],
+        "speaker_side" :  csv_data['SPEAKER SIDE'].tolist()[line],
         "text" : csv_data['TEXT'].tolist()[line],
         "flag_id" : csv_data['FLAG ID'].tolist()[line],
         "flag_value" : csv_data['FLAG VALUE'].tolist()[line],
@@ -32,22 +32,25 @@ def getJsonFromLine(csv_data, csv_line_index):
     if data['display_text'] == "-":
         data['display_text'] = ""
 
-    convertedToJson = json.dumps(data, indent=4)
-    return convertedToJson
+    #convertedToJson = json.dumps(data, indent=4)
+    return data
+    #return convertedToJson
 
 def getCharacterSpriteData(csv_dialogue):
     characters = set()
     characterSprites = []
     for each in csv_dialogue['SPEAKER'].tolist():
-        characters.add(each)
+        if not pandas.isna(each):
+            characters.add(each)
     for each in characters:
-        characterSprites.append({"name" : each, "spriteID" : ""})
+        characterSprites.append({"name" : each, "spriteID" : "", "yapping_speed" : 0.5})    
     return characterSprites
 
-def getDialogueID(): # ---------------------------------------------------------------------------------- Make this, dummy
-    return "********** MANUALLY CHANGE ID VALUE **********"
+def getDialogueID(csv_data):
+    dialogueID = int(csv_data['\/ Dialogue ID \/'].tolist()[0])
+    return dialogueID
 
-directory = 'input_script_xlsx'
+directory = 'input_script_csvs'
 completedDirectory = 'completed_scripts'
 for filename in os.listdir(directory):
     file = os.path.join(directory, filename)
@@ -59,16 +62,22 @@ for filename in os.listdir(directory):
     firstLineIndex = 2
     dialogueData = getJsonFromLine(csv_data, firstLineIndex)
     jsonData = {
+        "dialogueID" : getDialogueID(csv_data),
         "chatSpriteIDs" : getCharacterSpriteData(csv_data),
-        "dialogueID" : getDialogueID(),
         "dialogue" : dialogueData 
     }
-    outputJson = json.dumps(jsonData, indent=4)
 
+    
     #Output the JSON
     completedPath = os.path.join(completedDirectory, 'TESTOUT.txt')
     out = open(completedPath, 'w', encoding='utf-8')
+    
+    #outputJson = json.dumps({"jsonData" : jsonData}, indent=2)
+    outputJson = json.dumps(jsonData, indent=4)
+    #quotesFixes = outputJson.replace('"', '\\"')
+
     out.write(outputJson)
+    #out.write(jsonData["dialogue"])
 
     completedPath = os.path.join(completedDirectory, filename)
     os.rename(file, completedPath)
