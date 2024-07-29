@@ -19,11 +19,12 @@ def getJsonFromLine(csv_data, csv_line_index):
         "flag_id" : csv_data['FLAG ID'].tolist()[line],
         "flag_value" : csv_data['FLAG VALUE'].tolist()[line],
         "respondable" : csv_data['RESPONDABLE?'].tolist()[line],
-        "response_1" : getJsonFromLine(csv_data, csv_data['RESPONSE 1'].tolist()[line]),
-        "response_2" : getJsonFromLine(csv_data, csv_data['RESPONSE 2'].tolist()[line]),
-        "response_3" : getJsonFromLine(csv_data, csv_data['RESPONSE 3'].tolist()[line]),
-        "response_4" : getJsonFromLine(csv_data, csv_data['RESPONSE 4'].tolist()[line]),
-        "response_5" : getJsonFromLine(csv_data, csv_data['RESPONSE 5'].tolist()[line]), 
+        "response_options":{
+            "response_1" : getJsonFromLine(csv_data, csv_data['RESPONSE 1'].tolist()[line]),
+            "response_2" : getJsonFromLine(csv_data, csv_data['RESPONSE 2'].tolist()[line]),
+            "response_3" : getJsonFromLine(csv_data, csv_data['RESPONSE 3'].tolist()[line]),
+            "response_4" : getJsonFromLine(csv_data, csv_data['RESPONSE 4'].tolist()[line]),
+            "response_5" : getJsonFromLine(csv_data, csv_data['RESPONSE 5'].tolist()[line])},
     }
 
     if data['flag_id'] == "-":
