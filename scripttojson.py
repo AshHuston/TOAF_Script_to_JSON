@@ -33,9 +33,7 @@ def getJsonFromLine(csv_data, csv_line_index):
     if data['display_text'] == "-":
         data['display_text'] = ""
 
-    #convertedToJson = json.dumps(data, indent=4)
     return data
-    #return convertedToJson
 
 def getCharacterSpriteData(csv_dialogue):
     characters = set()
@@ -70,15 +68,13 @@ for filename in os.listdir(directory):
 
     
     #Output the JSON
-    completedPath = os.path.join(completedDirectory, 'TESTOUT.txt')
+    outputFileName  = filename.split(".")[0]
+    completedPath = os.path.join(completedDirectory, f'{outputFileName}.txt')
     out = open(completedPath, 'w', encoding='utf-8')
     
-    #outputJson = json.dumps({"jsonData" : jsonData}, indent=2)
     outputJson = json.dumps(jsonData, indent=4)
-    #quotesFixes = outputJson.replace('"', '\\"')
 
     out.write(outputJson)
-    #out.write(jsonData["dialogue"])
 
     completedPath = os.path.join(completedDirectory, filename)
     os.rename(file, completedPath)
