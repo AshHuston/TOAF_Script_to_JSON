@@ -51,7 +51,9 @@ def getDialogueID(csv_data):
 
 directory = 'input_script_csvs'
 completedDirectory = 'completed_scripts'
+fileCount = 0
 for filename in os.listdir(directory):
+    fileCount += 1
     file = os.path.join(directory, filename)
 
     #Pull out the data
@@ -66,15 +68,13 @@ for filename in os.listdir(directory):
         "dialogue" : dialogueData 
     }
 
-    
     #Output the JSON
     outputFileName  = filename.split(".")[0]
     completedPath = os.path.join(completedDirectory, f'{outputFileName}.txt')
     out = open(completedPath, 'w', encoding='utf-8')
-    
     outputJson = json.dumps(jsonData, indent=4)
-
     out.write(outputJson)
-
     completedPath = os.path.join(completedDirectory, filename)
     os.rename(file, completedPath)
+
+print(f"Done! {fileCount} JSON files created.")
