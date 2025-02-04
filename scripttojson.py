@@ -15,7 +15,7 @@ def getJsonFromLine(csv_data, csv_line_index):
         "display_text" : csv_data['DISPLAY TEXT'].tolist()[line],
         "speaker" : csv_data['SPEAKER'].tolist()[line],
         "speaker_side" :  csv_data['SPEAKER SIDE'].tolist()[line],
-        "text" : csv_data['TEXT'].tolist()[line],
+        "text" : csv_data['TEXT'].tolist()[line].replace("\\n", "\n").replace("\u2019","'"),
         "flag_id" : csv_data['FLAG ID'].tolist()[line],
         "flag_value" : csv_data['FLAG VALUE'].tolist()[line],
         "respondable" : csv_data['RESPONDABLE?'].tolist()[line],
